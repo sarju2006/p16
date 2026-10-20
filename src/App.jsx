@@ -1,37 +1,65 @@
 
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Link
-} from 'react-router-dom';
+import { useState } from "react";
 
-import Home from './pages/Home';
-import About from './pages/About';
-import Contact from './pages/Contact';
+export default function App() {
+  const [products, setProducts] = useState([]);
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
 
-function App() {
+  function addProduct(event) {
+    event.preventDefault();
+
+    const newProduct = {
+      id: Date.now(),
+      name: name,
+      price: Number(price)
+    };
+
+    setProducts([...products, newProduct]);
+    setName("");
+    setPrice("");
+  }
+
   return (
-    <BrowserRouter>
-      <div className="app">
-        <nav className="navbar">
-          <h2>Practical 11</h2>
+    <div>
+      <h1>Product Management</h1>
 
-          <div className="nav-links">
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-            <Link to="/contact">Contact</Link>
+      <form onSubmit={addProduct}>
+        <input
+          type="text"
+          placeholder="Enter Product Name"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          required
+        />
+        <br /><br />
+
+        <input
+          type="number"
+          placeholder="Enter Product Price"
+          value={price}
+          onChange={(event) => setPrice(event.target.value)}
+          min="0"
+          required
+        />
+        <br /><br />
+
+        <button type="submit">Add Product</button>
+      </form>
+
+      <h2>Product List</h2>
+
+      {products.length === 0 ? (
+        <p>No products available.</p>
+      ) : (
+        products.map((product) => (
+          <div key={product.id}>
+            <p>
+              Product: {product.name} | Price: Rs. {product.price}
+            </p>
           </div>
-        </nav>
-
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+        ))
+      )}
+    </div>
   );
 }
-
-export default App;
